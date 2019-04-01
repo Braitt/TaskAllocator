@@ -7,14 +7,14 @@ import {
   Text
 } from 'react-native';
 
-export default class Event extends Component {
+export default class Event_view extends Component {
 
   render() {
       return(
         <View style={this.props.style}>
           <Text>
-            {this.props.item.title}
-            </Text>
+            {this.props.event.title}
+          </Text>
         </View>
       )
   }
