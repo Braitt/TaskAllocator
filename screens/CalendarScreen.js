@@ -9,20 +9,20 @@ import {
 import { Agenda } from 'react-native-calendars';
 import Event_view from './Event_view.js';
 import EventClass from './eventClass.js';
+import { Icon } from 'expo';
 
 export default class AgendaScreen extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      expense: {key:'expense', color: 'blue'},
-      income: {key:'income', color: 'green'},
-      neutral: {key:'neutral', color: 'orange'},
+      expense: { key: 'expense', color: 'blue' },
+      income: { key: 'income', color: 'orange' },
+      neutral: { key: 'neutral', color: 'green' },
 
       dayEvents: {},
       monthEvents: {},
       markedDates: {},
-      
     };
     //this.loadEvents = this.loadEvents.bind(this);
   }
@@ -30,13 +30,15 @@ export default class AgendaScreen extends Component {
   render() {
     return (
       <Agenda
-      //  displayLoadingIndicator={true}
-        renderKnob={() => {return (<Icon.Ionicons
-          name={'md-create'}
-          size={26}
-          //style={{ marginBottom: -3 }}
-          color={this.props.focused ? Colors.tabIconSelected : Colors.tabIconDefault}
-        />);}}
+        //  displayLoadingIndicator={true}
+        renderKnob={() => {
+          return (<Icon.Ionicons
+            name={'md-arrow-round-down'}
+            size={26}
+            //style={{ marginBottom: -3 }}
+            color={'orange'}
+          />);
+        }}
         items={this.state.monthEvents}
         firstDay={1}
         selected={new Date()}
@@ -57,88 +59,126 @@ export default class AgendaScreen extends Component {
     );
   }
 
-  getMonthEventsDaybyDay(day){
+  getMonthEventsDaybyDay(day) {
     console.log(day)
+    let storage = {
+      CASH: 10000,
+      DEBITO_BANCOLOMBIA: 100000,
+      CREDITO_BANCOLOMBIA_AMERICAN: 800000,
+      CREDITO_BANCOLOMBIA_VISA: 900000,
+    }
+    const ev1 = new EventClass({
+      year: 2019, month: 4, day: 10, hour: 10, minute: 0, duration: 90,
+      title: "1", category: EventClass.getCategories().TRANSPORT, tags: ["SITP"],
+      amount: 2200, type: EventClass.getTypes().EXPENSE,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
+    const ev2 = new EventClass({
+      year: 2019, month: 4, day: 10, hour: 10, minute: 0, duration: 90,
+      title: "2", category: EventClass.getCategories().TRANSPORT, tags: ["UBER"],
+      amount: 2200, type: EventClass.getTypes().INCOME,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
+    const ev3 = new EventClass({
+      year: 2019, month: 4, day: 10, hour: 10, minute: 0, duration: 90,
+      title: "3", category: EventClass.getCategories().TRANSPORT, tags: ["UBER"],
+      amount: 2200, type: EventClass.getTypes().INCOME,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
+    const ev4 = new EventClass({
+      year: 2019, month: 4, day: 11, hour: 10, minute: 0, duration: 90,
+      title: "4", category: EventClass.getCategories().TRANSPORT, tags: ["SITP"],
+      amount: 2200, type: EventClass.getTypes().EXPENSE,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
+    const ev5 = new EventClass({
+      year: 2019, month: 4, day: 11, hour: 10, minute: 0, duration: 90,
+      title: "5", category: EventClass.getCategories().TRANSPORT, tags: ["SITP"],
+      amount: 2200, type: EventClass.getTypes().EXPENSE,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
+    const ev6 = new EventClass({
+      year: 2019, month: 4, day: 20, hour: 10, minute: 0, duration: 90,
+      title: "6", category: EventClass.getCategories().TRANSPORT, tags: ["SITP"],
+      ammount: 0, type: EventClass.getTypes().NEUTRAL,
+      account: EventClass.getAccounts().DEBITO_BANCOLOMBIA
+    });
 
-    const ev1 = new EventClass({ 
-      year: 2019, month: 4, day: 10, hour: 10, minute: 0, duration: 90, 
-      title: "1", category: EventClass.categories.TRANSPORT, tags: ["SITP"],
-      ammount: 2200, type: EventClass.types.EXPENSE, 
-      account: EventClass.accounts.DEBITO_BANCOLOMBIA 
-    });
-    const ev2 = new EventClass({ 
-      year: 2019, month: 4, day: 10, hour: 10, minute: 0, duration: 90, 
-      title: "2", category: EventClass.categories.TRANSPORT, tags: ["SITP"],
-      ammount: 2200, type: EventClass.types.INCOME, 
-      account: EventClass.accounts.DEBITO_BANCOLOMBIA 
-    });
-    const ev3 = new EventClass({ 
-      year: 2019, month: 4, day: 11, hour: 10, minute: 0, duration: 90, 
-      title: "3", category: EventClass.category.TRANSPORT, tags: ["SITP"],
-      ammount: 2200, type: EventClass.types.EXPENSE, 
-      account: EventClass.accounts.DEBITO_BANCOLOMBIA 
-    });
-    const ev4 = new EventClass({ 
-      year: 2019, month: 4, day: 20, hour: 10, minute: 0, duration: 90, 
-      title: "4", category: EventClass.categories.TRANSPORT, tags: ["SITP"],
-      ammount: 0, type: EventClass.types.NEUTRAL, 
-      account: EventClass.accounts.DEBITO_BANCOLOMBIA 
-    });
-
-    let eventList = [ev1, ev2, ev3, ev4];
+    let eventList = [ev1, ev2, ev3, ev4, ev5, ev6];
 
     let dayEvents = {};
     let monthEvents = {};
     let markedDates = {}
 
-    const accounts = EventClass.accounts;
+    const accounts = EventClass.getAccounts();
     const keys = Object.keys(accounts);
-    console.log(keys);
-
-    for(let i=0; i < eventList.length; i++ ) {
+    for (let i = 1; i < 32; i++) {
+      const date = `${day.year}-${day.month < 10 ? '0' + day.month : day.month}-${i < 10 ? '0' + i : i}`;
+      dayEvents[date] = {};
+      for (let j = 0; j < keys.length; j++) {
+        dayEvents[date][accounts[keys[j]]] = {}
+        dayEvents[date][accounts[keys[j]]].dayIncome = 0;
+        dayEvents[date][accounts[keys[j]]].dayExpenses = 0;
+        dayEvents[date][accounts[keys[j]]].remaining = -1;
+      }
+    }
+    for (let i = 0; i < eventList.length; i++) {
       const event = eventList[i];
-      if(!dayEvents[event.getYearMonthDay()]){
-        dayEvents[event.getYearMonthDay()] = { };
-        for(let j = 0; j< keys.length; j++ ){
-          dayEvents[event.getYearMonthDay()][accounts[keys]].dayIncomes = 0;
-          dayEvents[event.getYearMonthDay()][accounts[keys]].dayExpenses = 0;
-        }
-
+      if (!monthEvents[event.getYearMonthDay()]) {
         monthEvents[event.getYearMonthDay()] = []
-        markedDates[event.getYearMonthDay()] = {startingDay: true, selected: true, endingDay: true, color: 'green', textColor: 'gray', marked: true, dots: []}
+        markedDates[event.getYearMonthDay()] = { startingDay: true, endingDay: true, color: 'black', marked: true, dots: [] }
       }
 
-      if(event.type === EventClass.EXPENSE) {
-        dayEvents[event.getYearMonthDay()][event.account].dayExpenses += event.ammount;
+      if (event.type === EventClass.getTypes().EXPENSE) {
+        dayEvents[event.getYearMonthDay()][event.account].dayExpenses += event.amount;
         markedDates[event.getYearMonthDay()]['dots'].push(this.state.expense);
-      } else if (event.type === EventClass.INCOME) {
-        dayEvents[event.getYearMonthDay()][event.account].dayIncome += event.ammount;
+      } else if (event.type === EventClass.getTypes().INCOME) {
+        dayEvents[event.getYearMonthDay()][event.account].dayIncome += event.amount;
         markedDates[event.getYearMonthDay()]['dots'].push(this.state.income);
-      } else if (event.type === EventClass.NEUTRAL) {
+      } else if (event.type === EventClass.getTypes().NEUTRAL) {
         markedDates[event.getYearMonthDay()]['dots'].push(this.state.neutral);
       }
-
       monthEvents[event.getYearMonthDay()].push(event.getEvent());
     }
     //fill dates with no events
-    
     for (let i = 1; i < 32; i++) {
       const date = `${day.year}-${day.month < 10 ? '0' + day.month : day.month}-${i < 10 ? '0' + i : i}`;
-      const dayEvent = dayEvents[date];
+      const yesterday = `${day.year}-${day.month < 10 ? '0' + day.month : day.month}-${i <= 10 ? '0' + (i-1) : (i-1)}`;
+      let dayEvent = dayEvents[date];
+      if (i === 1 ){
+        for (let j = 0; j < keys.length; j++) {
+          dayEvent[accounts[keys[j]]].remaining = storage[accounts[keys[j]]] + 
+          dayEvent[accounts[keys[j]]].dayIncome - dayEvent[accounts[keys[j]]].dayExpenses;
+        }
+      }
+      else{
+        for (let j = 0; j < keys.length; j++) {
+          console.log(yesterday)
+          console.log(dayEvents[yesterday])
+          dayEvent[accounts[keys[j]]].remaining = 
+          dayEvents[yesterday][accounts[keys[j]]].remaining +
+          dayEvent[accounts[keys[j]]].dayIncome - dayEvent[accounts[keys[j]]].dayExpenses;
+        }
+      }
+      
       let evReport = new EventClass({
         year: 2019, month: 1, day: 1, hour: 1, minute: 0, duration: 90,
-        title: "Report at end day", category: EventClass.categories.REPORT, tags: [],
-        ammount: 0, type: EventClass.types.NEUTRAL,
-        account: EventClass.accounts.NONE,
+        title: "Report", category: EventClass.getCategories().REPORT, tags: [],
+        amount: 0, type: EventClass.getTypes().NEUTRAL,
+        account: EventClass.getAccounts().NONE,
         dayEvent: dayEvent
       });
-      monthEvents[date].unshift(evReport.getEvent());
+      if (monthEvents[date]) {
+        monthEvents[date].unshift(evReport.getEvent());
+      }
+      else {
+        monthEvents[date] = [evReport.getEvent()];
+      }
     }
     /*
       Supuestamente a este punto ya crea un evento al inicio del día informando
       los gastos del día
     */
-
     this.setState({
       dayEvents: dayEvents,
       monthEvents: monthEvents,
@@ -157,8 +197,8 @@ export default class AgendaScreen extends Component {
   // Event_view
   renderItem(event) {
     return (
-      <Event_view 
-        style={[styles.event, { height: event.duration * 1.5 }]} 
+      <Event_view
+        style={[styles.event, { height: event.duration * 1.5 }]}
         event={event}
       />
     );
