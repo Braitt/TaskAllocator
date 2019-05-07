@@ -9,10 +9,19 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import { AppRegistry, TextInput } from 'react-native';
 import { MonoText } from '../components/StyledText';
+import DatePicker from 'react-native-datepicker'
 
 export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: 'Title',
+      date: "2019-05-15"
+    };
+    //this.loadEvents = this.loadEvents.bind(this);
+  }
   static navigationOptions = {
     header: null,
   };
@@ -33,33 +42,48 @@ export default class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
+          <Text>
+            <MonoText>Insert a title for your new event</MonoText>
+          </Text>
+            <TextInput
+              style={{ width: 500, borderColor: 'gray', borderWidth: 1 }}
+              onChangeText={(text) => this.setState({ text })}
+              value={this.state.text}
+            />
+            <DatePicker
+              style={{ width: 200 }}
+              date={this.state.date}
+              mode="date"
+              placeholder="select date"
+              format="YYYY-MM-DD"
+              minDate="2019-05-01"
+              maxDate="2019-06-01"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0
+                },
+                dateInput: {
+                  marginLeft: 36
+                }
+              }}
+              onDateChange={(date) => { this.setState({ date: date }) }}
+            />
+            <TextInput
+              style={{ width: 500, borderColor: 'gray', borderWidth: 1 }}
+              keyboardType='numeric'
+              onChangeText={(text) => {this.setState({ duration: text }) }}
+              value={this.state.duration}
+              maxLength={10}  //setting limit of input
+            />
 
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
 
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View>
       </View>
     );
   }
